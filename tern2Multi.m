@@ -1,5 +1,5 @@
 clear all; close all; clc
-% Multi-scale analysis code for Ternary Type I
+% Multi-scale analysis code for Ternary Type II
 
 if ~isfolder('./results')
     mkdir './results/';
@@ -13,8 +13,8 @@ ssI = 0.98;
 
 % Create output file.
 first_line = ["Image", "Coef. value", "SSIM"];
-output_name = ['./results/tern1_',num2str(ssI),'_SSIM.csv'];
-% writematrix(first_line,output_name);
+output_name = ['./results/tern2_',num2str(ssI),'_SSIM.csv'];
+writematrix(first_line,output_name);
 
 % Set lower bound for differing initializing loop
 low_bound = 0.99*ssI;
@@ -60,22 +60,28 @@ for i=4:length(folders)
     disp(['Compression ratio: ',num2str(val)]);
     disp(['SSIM: ',num2str(m)]);
     data = [convertCharsToStrings(image_name), val, m];
-%     writematrix(data,output_name,'WriteMode','append');
+    writematrix(data,output_name,'WriteMode','append');
     end
 end
+
+% image_file = './photos/iran/Image01.jpg';
+% Iref = double(imread(image_file));
+% I = mainImageTern2(Iref,0.01);
+% x = ssim(I,Iref)
+% x = mean([multissim(I(:,:,1),Iref(:,:,1)),multissim(I(:,:,2),Iref(:,:,2)),multissim(I(:,:,3),Iref(:,:,3))])
 
 %--------------------------------------------------------------------------
 
 function x = multi(b,image)
     s = size(image,3);
     if s == 3
-        I = mainImageTern1(image,b);
+        I = mainImageTern2(image,b);
         x = mean([multissim(I(:,:,1),image(:,:,1)),multissim(I(:,:,2),image(:,:,2)),multissim(I(:,:,3),image(:,:,3))]);
     elseif s == 2
-        I = mainImageTern1(image,b);
+        I = mainImageTern2(image,b);
         x = mean([multissim(I(:,:,1),image(:,:,1)),multissim(I(:,:,2),image(:,:,2))]);
     elseif s == 1
-        I = mainImageTern1(image,b);
+        I = mainImageTern2(image,b);
         x = multissim(I,image);
     end
 end
